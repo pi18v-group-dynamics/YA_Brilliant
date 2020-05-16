@@ -90,7 +90,8 @@
             "Нелинейная коррекция",
             "Зашумление",
             "Стекло",
-            "Волна"});
+            "Волна",
+            "Негатив"});
             this.comboBox1.Location = new System.Drawing.Point(548, 75);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(245, 37);
@@ -102,11 +103,14 @@
             // 
             this.comboBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "ЧБ"});
             this.comboBox2.Location = new System.Drawing.Point(548, 119);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(245, 37);
             this.comboBox2.TabIndex = 5;
             this.comboBox2.Text = "Фильтры";
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
             // button4
             // 
