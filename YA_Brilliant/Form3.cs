@@ -315,6 +315,9 @@ namespace YA_Brilliant
                 case "ЧБ":
                     pictureBox1.Image = ChB(pictureBox1.Image);
                     break;
+                case "Морской бриз":
+                    pictureBox1.Image = SeaBr(pictureBox1.Image);
+                    break;
             }
         }
 
@@ -337,6 +340,39 @@ namespace YA_Brilliant
             return result;
         }
 
+        private Bitmap SeaBr(Image image) //морской бриз
+        {
+            //засиняем
+            Bitmap result = new Bitmap(image);
+            Rectangle rect = new Rectangle(0, 0, result.Width, result.Height);
+            BitmapData bitmapData = result.LockBits(rect, ImageLockMode.ReadWrite, result.PixelFormat);
+            IntPtr ptr = bitmapData.Scan0;
+            int bytes = bitmapData.Stride * result.Height;
+            byte[] rgbValues = new byte[bytes];
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+            for (int i = 0; i < rgbValues.Length; i += 4)
+            {
+                rgbValues[i] = 170;
+            }
+            Marshal.Copy(rgbValues, 0, ptr, bytes);
+            result.UnlockBits(bitmapData);
+
+           //добавление воды
+            Bitmap finalImage = null;
+            Bitmap sea = new Bitmap("SeaBr.png");
+            finalImage = new Bitmap(result.Width, result.Height);
+            using (Graphics g = Graphics.FromImage(finalImage))
+            {
+                g.Clear(Color.Transparent);
+                g.DrawImage(result, new Rectangle(0, 0, finalImage.Width, finalImage.Height));
+
+                int SeaHeight = Convert.ToInt32(0.9 * finalImage.Height);
+                g.DrawImage(sea, new Rectangle(0, finalImage.Height - SeaHeight, finalImage.Width, finalImage.Height));
+            }
+            bmpList.Add(finalImage);
+            return finalImage;
+        }
+
         private void button3_Click(object sender, EventArgs e) //сохранение
         {
             if (pictureBox1.Image != null) ImSave();
@@ -349,7 +385,7 @@ namespace YA_Brilliant
         {
             if (pictureBox1.Image != null)
             {
-                dr = MessageBox.Show("Сохранить старое изображение перед удалением?", "Внимание!", MessageBoxButtons.YesNo);
+                dr = MessageBox.Show("Сохранить изображение перед удалением?", "Внимание!", MessageBoxButtons.YesNo);
                 if (dr == DialogResult.Yes) //если да, то сохраняем и добавляем новое
                 {
                     ImSave();
@@ -358,6 +394,57 @@ namespace YA_Brilliant
             }
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if(pictureBox1.Image == null)
+            {
+                MessageBox.Show("Выберите изображение");
+                return;
+            }
+            if(bmpList.Count == 1)
+            {
+                MessageBox.Show("Изображение в начальном состоянии");
+                return;
+            }
+            bmpList.RemoveAt(bmpList.Count - 1);
+            pictureBox1.Image = bmpList.Last();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image == null)
+            {
+                MessageBox.Show("Выберите изображение");
+                return;
+            }
+            if (bmpList.Count == 1)
+            {
+                MessageBox.Show("Изображение в начальном состоянии");
+                return;
+            }
+            Bitmap bitmap = new Bitmap(bmpList.FirstOrDefault());
+            bmpList.Clear();
+            bmpList.Add(bitmap);
+            pictureBox1.Image = bitmap;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image == null)
+            {
+                MessageBox.Show("Выберите изображение");
+                return;
+            }
+            if (bmpList.Count == 1)
+            {
+                MessageBox.Show("Изображение в начальном состоянии");
+                return;
+            }
+            Form4.begin = bmpList.FirstOrDefault();
+            Form4.end = bmpList.Last();
+            Form4 f4 = new Form4();
+            f4.ShowDialog();
+        }
     }
 }
  

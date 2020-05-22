@@ -104,7 +104,9 @@
             this.comboBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.Items.AddRange(new object[] {
-            "ЧБ"});
+            "ЧБ",
+            "Майский кот",
+            "Морской бриз"});
             this.comboBox2.Location = new System.Drawing.Point(548, 119);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(245, 37);
@@ -121,6 +123,7 @@
             this.button4.TabIndex = 6;
             this.button4.Text = "Отменить последние действия";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
             // 
@@ -131,6 +134,7 @@
             this.button5.TabIndex = 7;
             this.button5.Text = "Отменить все действия";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // button6
             // 
@@ -141,6 +145,7 @@
             this.button6.TabIndex = 8;
             this.button6.Text = "Посмотреть изменения";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // Form3
             // 
