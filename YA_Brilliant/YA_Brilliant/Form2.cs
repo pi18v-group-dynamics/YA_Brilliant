@@ -61,6 +61,8 @@ namespace YA_Brilliant
             if (textBox1.Text != textBox2.Text) //корректный повтор пароля
             {
                 MessageBox.Show("Вы ввели разные пароли");
+                textBox2.Text = "";
+                textBox1.Text = "";
                 return;
             }
             if (textBox2.Text.Length < 6) //длинна пароля
@@ -74,11 +76,11 @@ namespace YA_Brilliant
             string text = reader.ReadToEnd();
             reader.Close();
             file.Close();
-            string [] words  = text.Split(new char[] { '\n' });
+            string[] words = text.Split('\n');
             //проверяем занят ли указанный логин
-            for (int i = 0; i < words.Length; i+=2)
+            for (int i = 0; i < words.Length; i += 2)
             {
-                if (textBox4.Text == words[i])
+                if (words[i] == textBox4.Text)
                 {
                     MessageBox.Show("Данный логин уже занят");
                     return;
@@ -87,8 +89,10 @@ namespace YA_Brilliant
             //открываем файл для записи в конец
             file = new FileStream("Accounts.txt", FileMode.Append);
             writer = new StreamWriter(file);
-            writer.WriteLine(textBox4.Text); //каждая запись с новой строки
-            writer.WriteLine(textBox2.Text);
+            writer.Write(textBox4.Text); //каждая запись с новой строки
+            writer.Write("\n");
+            writer.Write(textBox2.Text);
+            writer.Write("\n");
             writer.Close();
             file.Close();
             MessageBox.Show("Добро пожаловать, " + textBox4.Text); //переход на основную форму
