@@ -96,6 +96,12 @@ namespace YA_Brilliant
             writer.Close();
             file.Close();
             MessageBox.Show("Добро пожаловать, " + textBox4.Text); //переход на основную форму
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Зарегистрирован новый пользователь: " + textBox4.Text + " " + DateTime.Now);
+            writer.WriteLine("В систему вошёл пользователь: " + textBox4.Text + " " + DateTime.Now); //журналирование
+            writer.Close();
+            file.Close();
             Form3 f3 = new Form3();
             this.Hide();
             f3.Show();

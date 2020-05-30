@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
+
+//using YA_Brilliant.Properties;
 
 namespace YA_Brilliant
 {
@@ -23,6 +20,8 @@ namespace YA_Brilliant
             InitializeComponent();
         }
 
+        FileStream file;
+        StreamWriter writer;
         DialogResult dr; //окошко да/нет
 
         private void button1_Click(object sender, EventArgs e)//добавление изображение
@@ -53,6 +52,11 @@ namespace YA_Brilliant
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 pictureBox1.Image.Save(sfd.FileName);
+                file = new FileStream("Activity.txt", FileMode.Append);
+                writer = new StreamWriter(file);
+                writer.WriteLine("Изображение сохранено по адресу " + sfd.FileName + " " + DateTime.Now);
+                writer.Close();
+                file.Close();
             }
             else return;
         }
@@ -95,10 +99,15 @@ namespace YA_Brilliant
                     var ms = new MemoryStream((int)fs.Length);
                     fs.CopyTo(ms);
                     ms.Position = 0;
-                    pictureBox1.Image = Image.FromStream(ms);
+                    pictureBox1.Image = System.Drawing.Image.FromStream(ms);
                     Bitmap bmp = new Bitmap(pictureBox1.Image);
                     bmpList.Add(bmp);
                 }
+                file = new FileStream("Activity.txt", FileMode.Append);
+                writer = new StreamWriter(file);
+                writer.WriteLine("Изображение добавлено для обработки (адрес: " + path + ") " + DateTime.Now);
+                writer.Close();
+                file.Close();
             }
             catch (Exception ex)
             {
@@ -136,7 +145,7 @@ namespace YA_Brilliant
             }
         }
 
-        private Bitmap linCor(Image image) //линейная коррекция (по определению не на всех фотографиях эффект не виден)
+        private Bitmap linCor(System.Drawing.Image image) //линейная коррекция (по определению не на всех фотографиях эффект не виден)
         {
             Bitmap result = new Bitmap(image);
             Rectangle rect = new Rectangle(0, 0, result.Width, result.Height);
@@ -160,14 +169,16 @@ namespace YA_Brilliant
             for (int i = 0; i < rgbValues.Length; i += 4)
             {
                 rgbValues[i] = Y(rgbValues[i], XmaxR, XminR);
-                rgbValues[i] = Y(rgbValues[i], XmaxR, XminR);
-                rgbValues[i] = Y(rgbValues[i], XmaxR, XminR);
-                rgbValues[i] = Y(rgbValues[i], XmaxR, XminR);
                 rgbValues[i + 1] = Y(rgbValues[i + 1], XmaxG, XminG);
                 rgbValues[i + 2] = Y(rgbValues[i + 2], XmaxB, XminB);
             }
             Marshal.Copy(rgbValues, 0, ptr, bytes);
             result.UnlockBits(bitmapData);
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Применение линейной коррекции " + DateTime.Now);
+            writer.Close();
+            file.Close();
             bmpList.Add(result);
             return result;
         }
@@ -183,7 +194,7 @@ namespace YA_Brilliant
         static public float gamma;
         static public bool SetValue;
 
-        private Bitmap Gamma(Image image) //нелинейная гамма коррекция
+        private Bitmap Gamma(System.Drawing.Image image) //нелинейная гамма коррекция
         {
             Bitmap result;
             Form5 f5 = new Form5();
@@ -207,6 +218,11 @@ namespace YA_Brilliant
                     gr.DrawImage(image, points, rect, GraphicsUnit.Pixel, attributes);
                 }
                 bmpList.Add(result);
+                file = new FileStream("Activity.txt", FileMode.Append);
+                writer = new StreamWriter(file);
+                writer.WriteLine("Применение нелинейной коррекции с параметром " + gamma + " " + DateTime.Now);
+                writer.Close();
+                file.Close();
                 // Вернуть результат.
                 return result;
             }
@@ -214,7 +230,7 @@ namespace YA_Brilliant
             return result;
         }
 
-        private Bitmap Shum(Image image) //зашумление
+        private Bitmap Shum(System.Drawing.Image image) //зашумление
         {
             Bitmap result = new Bitmap(image);
             Rectangle rect = new Rectangle(0, 0, result.Width, result.Height);
@@ -233,10 +249,15 @@ namespace YA_Brilliant
             Marshal.Copy(rgbValues, 0, ptr, bytes);
             result.UnlockBits(bitmapData);
             bmpList.Add(result);
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Применение шума " + DateTime.Now);
+            writer.Close();
+            file.Close();
             return result;
         }
 
-        private Bitmap Glass(Image image) //стекло
+        private Bitmap Glass(System.Drawing.Image image) //стекло
         {
             Random rand = new Random();
             Bitmap bitmap = new Bitmap(image);
@@ -256,11 +277,16 @@ namespace YA_Brilliant
                 }
             }
             bmpList.Add(result);
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Применение стекла " + DateTime.Now);
+            writer.Close();
+            file.Close();
             return result;
         }
 
         static public int ugol = 1;
-        private Bitmap Wave(Image image)//волна
+        private Bitmap Wave(System.Drawing.Image image)//волна
         {
             Bitmap bitmap = new Bitmap(image);
             Bitmap result = new Bitmap(image);
@@ -282,11 +308,16 @@ namespace YA_Brilliant
                     }
                 }
                 bmpList.Add(result);
+                file = new FileStream("Activity.txt", FileMode.Append);
+                writer = new StreamWriter(file);
+                writer.WriteLine("Применение волны с коэффициентом " + ugol + " " + DateTime.Now);
+                writer.Close();
+                file.Close();
             }
             return result;
         }
 
-        private Bitmap Negativ(Image image) //негатив
+        private Bitmap Negativ(System.Drawing.Image image) //негатив
         {
             Bitmap result = new Bitmap(image);
             Rectangle rect = new Rectangle(0, 0, result.Width, result.Height);
@@ -303,6 +334,11 @@ namespace YA_Brilliant
             Marshal.Copy(rgbValues, 0, ptr, bytes);
             result.UnlockBits(bitmapData);
             bmpList.Add(result);
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Применение негатива " + DateTime.Now);
+            writer.Close();
+            file.Close();
             return result;
         }
 
@@ -327,7 +363,7 @@ namespace YA_Brilliant
             }
         }
 
-        private Bitmap ChB (Image image) //чб
+        private Bitmap ChB (System.Drawing.Image image) //чб
         {
             Bitmap result = new Bitmap(image);
             Rectangle rect = new Rectangle(0, 0, result.Width, result.Height);
@@ -343,10 +379,15 @@ namespace YA_Brilliant
             Marshal.Copy(rgbValues, 0, ptr, bytes);
             result.UnlockBits(bitmapData);
             bmpList.Add(result);
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Применение фильтра \"ЧБ\" " + DateTime.Now);
+            writer.Close();
+            file.Close();
             return result;
         }
 
-        private Bitmap SeaBr(Image image) //морской бриз
+        private Bitmap SeaBr(System.Drawing.Image image) //морской бриз
         {
             //засиняем
             Bitmap result = new Bitmap(image);
@@ -374,10 +415,15 @@ namespace YA_Brilliant
                 g.DrawImage(sea, new Rectangle(0, Convert.ToInt32(0.1 * finalImage.Height), finalImage.Width, finalImage.Height));
             }
             bmpList.Add(finalImage);
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Применение фильтра \"Морской бриз\" " + DateTime.Now);
+            writer.Close();
+            file.Close();
             return finalImage;
         }
 
-        private Bitmap MayCat(Image image) //морской бриз
+        private Bitmap MayCat(System.Drawing.Image image) //морской бриз
         {
             Bitmap result = new Bitmap(image);
             //добавление кота
@@ -399,6 +445,11 @@ namespace YA_Brilliant
                    Convert.ToInt32(0.3 * finalImage.Width), Convert.ToInt32(0.3 * finalImage.Height)));
             }
             bmpList.Add(finalImage);
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Применение фильтра \"Майский кот\" " + DateTime.Now);
+            writer.Close();
+            file.Close();
             return finalImage;
         }
 
@@ -410,23 +461,32 @@ namespace YA_Brilliant
         }
 
 
-        int fl = 0;
+        int fl = 0, fl1 = 0;
         private void Form3_FormClosing(object sender, FormClosingEventArgs e) //выход
         {
             if (pictureBox1.Image != null && fl == 0)
             {
                 fl = 1;
-                dr = MessageBox.Show("Сохранить изображение перед удалением?", "Внимание!", MessageBoxButtons.YesNo);
+                dr = MessageBox.Show("Сохранить изображение перед выходом?", "Внимание!", MessageBoxButtons.YesNo);
                 if (dr == DialogResult.Yes) //если да, то сохраняем и добавляем новое
                 {
                     ImSave();
                     bmpList.Clear();
                 }
             }
-            Application.Exit();
+            if (fl1 == 0)
+            {
+                fl1 = 1;
+                file = new FileStream("Activity.txt", FileMode.Append);
+                writer = new StreamWriter(file);
+                writer.WriteLine("Завершение работы " + DateTime.Now + Environment.NewLine);
+                writer.Close();
+                file.Close();
+            }
+            System.Windows.Forms.Application.Exit();
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e) //отмена последнего действия
         {
             if(pictureBox1.Image == null)
             {
@@ -440,9 +500,14 @@ namespace YA_Brilliant
             }
             bmpList.RemoveAt(bmpList.Count - 1);
             pictureBox1.Image = bmpList.Last();
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Отмена последних действий " + DateTime.Now);
+            writer.Close();
+            file.Close();
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void button5_Click(object sender, EventArgs e) //откат до начального состояния
         {
             if (pictureBox1.Image == null)
             {
@@ -458,9 +523,14 @@ namespace YA_Brilliant
             bmpList.Clear();
             bmpList.Add(bitmap);
             pictureBox1.Image = bitmap;
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Отмена всех изменений " + DateTime.Now);
+            writer.Close();
+            file.Close();
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void button6_Click(object sender, EventArgs e) //до и после
         {
             if (pictureBox1.Image == null)
             {
@@ -472,10 +542,50 @@ namespace YA_Brilliant
                 MessageBox.Show("Изображение в начальном состоянии");
                 return;
             }
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Сравнение до и после " + DateTime.Now);
+            writer.Close();
+            file.Close();
             Form4.begin = bmpList.FirstOrDefault();
             Form4.end = bmpList.Last();
             Form4 f4 = new Form4();
             f4.ShowDialog();
+        }
+
+
+        static public bool import = true;
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (pictureBox1.Image == null)
+            {
+                MessageBox.Show("Выберите изображение");
+                return;
+            }
+            string savePath = "Vk.jpg";
+            pictureBox1.Image.Save(savePath, ImageFormat.Jpeg);
+            Form6.path = savePath;
+            Form6 f6 = new Form6();
+            f6.ShowDialog();
+            if (import)
+            {
+                MessageBox.Show("Импорт прошёл успешно");
+                file = new FileStream("Activity.txt", FileMode.Append);
+                writer = new StreamWriter(file);
+                writer.WriteLine("Импорт в соц. сети " + DateTime.Now);
+                writer.Close();
+                file.Close();
+            }
+            File.Delete("Vk.jpg");
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            file = new FileStream("Activity.txt", FileMode.Append);
+            writer = new StreamWriter(file);
+            writer.WriteLine("Открытие справки " + DateTime.Now);
+            writer.Close();
+            file.Close();
         }
     }
 }

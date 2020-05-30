@@ -61,6 +61,7 @@
             this.button2.TabIndex = 1;
             this.button2.Text = "Импорт изображения";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
@@ -157,6 +158,7 @@
             this.button7.TabIndex = 9;
             this.button7.Text = "Справка";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // Form3
             // 

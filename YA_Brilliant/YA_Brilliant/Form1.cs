@@ -30,8 +30,10 @@ namespace YA_Brilliant
             button2.ForeColor = Color.Black;
         }
 
-        System.IO.FileStream file;
+        FileStream file;
         StreamReader reader;
+        StreamWriter writer;
+
         private void button1_Click_1(object sender, EventArgs e)
         {
             if (textBox1.Text == "" || textBox2.Text == "") //заполнены ли все поля
@@ -46,7 +48,7 @@ namespace YA_Brilliant
             reader.Close();
             file.Close();
             string[] words = text.Split('\n');
-            //проверяем занят ли указанный логин
+            //проверяем существует ли указанный логин
             for (int i = 0; i < words.Length; i += 2)
             {
                 if (words[i] == textBox1.Text)
@@ -54,6 +56,11 @@ namespace YA_Brilliant
                     if(words[i+1] == textBox2.Text)
                     {
                         MessageBox.Show("Добро пожаловать, " + textBox1.Text); //переход на основную форму
+                        file = new FileStream("Activity.txt", FileMode.Append);
+                        writer = new StreamWriter(file);
+                        writer.WriteLine("В систему вошёл пользователь: " + textBox1.Text + " " + DateTime.Now); //журналирование
+                        writer.Close();
+                        file.Close();
                         Form3 f3 = new Form3();
                         this.Hide();
                         f3.Show();
