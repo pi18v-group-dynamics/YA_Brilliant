@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
+
+//using YA_Brilliant.Properties;
 
 namespace YA_Brilliant
 {
@@ -102,7 +99,7 @@ namespace YA_Brilliant
                     var ms = new MemoryStream((int)fs.Length);
                     fs.CopyTo(ms);
                     ms.Position = 0;
-                    pictureBox1.Image = Image.FromStream(ms);
+                    pictureBox1.Image = System.Drawing.Image.FromStream(ms);
                     Bitmap bmp = new Bitmap(pictureBox1.Image);
                     bmpList.Add(bmp);
                 }
@@ -148,7 +145,7 @@ namespace YA_Brilliant
             }
         }
 
-        private Bitmap linCor(Image image) //линейная коррекция (по определению не на всех фотографиях эффект не виден)
+        private Bitmap linCor(System.Drawing.Image image) //линейная коррекция (по определению не на всех фотографиях эффект не виден)
         {
             Bitmap result = new Bitmap(image);
             Rectangle rect = new Rectangle(0, 0, result.Width, result.Height);
@@ -197,7 +194,7 @@ namespace YA_Brilliant
         static public float gamma;
         static public bool SetValue;
 
-        private Bitmap Gamma(Image image) //нелинейная гамма коррекция
+        private Bitmap Gamma(System.Drawing.Image image) //нелинейная гамма коррекция
         {
             Bitmap result;
             Form5 f5 = new Form5();
@@ -233,7 +230,7 @@ namespace YA_Brilliant
             return result;
         }
 
-        private Bitmap Shum(Image image) //зашумление
+        private Bitmap Shum(System.Drawing.Image image) //зашумление
         {
             Bitmap result = new Bitmap(image);
             Rectangle rect = new Rectangle(0, 0, result.Width, result.Height);
@@ -260,7 +257,7 @@ namespace YA_Brilliant
             return result;
         }
 
-        private Bitmap Glass(Image image) //стекло
+        private Bitmap Glass(System.Drawing.Image image) //стекло
         {
             Random rand = new Random();
             Bitmap bitmap = new Bitmap(image);
@@ -289,7 +286,7 @@ namespace YA_Brilliant
         }
 
         static public int ugol = 1;
-        private Bitmap Wave(Image image)//волна
+        private Bitmap Wave(System.Drawing.Image image)//волна
         {
             Bitmap bitmap = new Bitmap(image);
             Bitmap result = new Bitmap(image);
@@ -320,7 +317,7 @@ namespace YA_Brilliant
             return result;
         }
 
-        private Bitmap Negativ(Image image) //негатив
+        private Bitmap Negativ(System.Drawing.Image image) //негатив
         {
             Bitmap result = new Bitmap(image);
             Rectangle rect = new Rectangle(0, 0, result.Width, result.Height);
@@ -366,7 +363,7 @@ namespace YA_Brilliant
             }
         }
 
-        private Bitmap ChB (Image image) //чб
+        private Bitmap ChB (System.Drawing.Image image) //чб
         {
             Bitmap result = new Bitmap(image);
             Rectangle rect = new Rectangle(0, 0, result.Width, result.Height);
@@ -390,7 +387,7 @@ namespace YA_Brilliant
             return result;
         }
 
-        private Bitmap SeaBr(Image image) //морской бриз
+        private Bitmap SeaBr(System.Drawing.Image image) //морской бриз
         {
             //засиняем
             Bitmap result = new Bitmap(image);
@@ -426,7 +423,7 @@ namespace YA_Brilliant
             return finalImage;
         }
 
-        private Bitmap MayCat(Image image) //морской бриз
+        private Bitmap MayCat(System.Drawing.Image image) //морской бриз
         {
             Bitmap result = new Bitmap(image);
             //добавление кота
@@ -486,7 +483,7 @@ namespace YA_Brilliant
                 writer.Close();
                 file.Close();
             }
-            Application.Exit();
+            System.Windows.Forms.Application.Exit();
         }
 
         private void button4_Click(object sender, EventArgs e) //отмена последнего действия
@@ -556,13 +553,30 @@ namespace YA_Brilliant
             f4.ShowDialog();
         }
 
+
+        static public bool import = true;
         private void button2_Click(object sender, EventArgs e)
         {
-            file = new FileStream("Activity.txt", FileMode.Append);
-            writer = new StreamWriter(file);
-            writer.WriteLine("Импорт в соц. сети " + DateTime.Now);
-            writer.Close();
-            file.Close();
+            if (pictureBox1.Image == null)
+            {
+                MessageBox.Show("Выберите изображение");
+                return;
+            }
+            string savePath = "Vk.jpg";
+            pictureBox1.Image.Save(savePath, ImageFormat.Jpeg);
+            Form6.path = savePath;
+            Form6 f6 = new Form6();
+            f6.ShowDialog();
+            if (import)
+            {
+                MessageBox.Show("Импорт прошёл успешно");
+                file = new FileStream("Activity.txt", FileMode.Append);
+                writer = new StreamWriter(file);
+                writer.WriteLine("Импорт в соц. сети " + DateTime.Now);
+                writer.Close();
+                file.Close();
+            }
+            File.Delete("Vk.jpg");
         }
 
         private void button7_Click(object sender, EventArgs e)
