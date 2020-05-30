@@ -581,6 +581,7 @@ namespace YA_Brilliant
 
         private void button7_Click(object sender, EventArgs e)
         {
+            Help.ShowHelp(this, "HELP//Spravka.chm");
             file = new FileStream("Activity.txt", FileMode.Append);
             writer = new StreamWriter(file);
             writer.WriteLine("Открытие справки " + DateTime.Now);
